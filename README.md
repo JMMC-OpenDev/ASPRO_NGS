@@ -6,13 +6,6 @@ GPAO NGS's python module for ASPRO2 to compute the strehl ratio of GRAVITY+ AO
 - Author: Anthony Berdeu (LESIA - Observatoire de Paris)
 
 
-## License
-
-**This project has received funding from the European Union's Horizon 2020 research and innovation programme under grant agreement No 101004719.**
-
-See [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
-
-
 ## Links:
 - [JMMC SearchFTT service](https://www.jmmc.fr)
 - [JMMC OpenDev @ github](https://github.com/JMMC-OpenDev/)
@@ -25,4 +18,10 @@ See [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LI
 - numpy
 
 
+## License
+Code License: [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
+
+**This code is part of a project that has received funding from the European Union’s Horizon 2020 research and innovation programme under grant agreement No 101004719.**
+
+![EU logo](doc/EU.jpg)
 
