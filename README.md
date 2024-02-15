@@ -7,7 +7,7 @@ GPAO NGS's python module for ASPRO2 to compute the strehl ratio of GRAVITY+ AO
 
 
 ## Links:
-- [JMMC SearchFTT service](https://www.jmmc.fr)
+- [JMMC SearchFTT service](https://searchftt.jmmc.fr/)
 - [JMMC OpenDev @ github](https://github.com/JMMC-OpenDev/)
 - [JMMC releases](https://www.jmmc.fr/releases/)
 - [JMMC Web site](https://www.jmmc.fr)
