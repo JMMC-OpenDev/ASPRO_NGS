@@ -1,4 +1,4 @@
-## ![JMMC logo](https://github.com/JMMC-OpenDev/.github/blob/main/doc/JMMC-logo.jpg) Open Dev.
+![JMMC logo](https://github.com/JMMC-OpenDev/.github/blob/main/doc/JMMC-logo.jpg) Open Dev.
 
 # ASPRO_NGS
 GPAO NGS's python module for ASPRO2 to compute the strehl ratio of GRAVITY+ AO
