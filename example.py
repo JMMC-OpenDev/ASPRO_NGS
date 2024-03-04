@@ -35,7 +35,7 @@ importlib.reload(aspro)
 
 ##### User parameters #####
 # Mode to simulate
-flag_mode = 'NGS_IR' # NGS_VIS/NGS_IR
+flag_mode = 'NGS_VIS' # NGS_VIS/NGS_IR
 
 # Turbulence
 config_turbulence = {}
@@ -47,7 +47,7 @@ config_turbulence['Cn2'] = [1] # Cn2 weight (could be a list) (for collapsing h_
 # NGS
 config_NGS = {}
 config_NGS['magnitude'] = 8 # Magnitude of the NGS
-config_NGS['zenith'] = 0 # For the airmass (deg)
+config_NGS['zenith'] = 0.0  # For the airmass (deg), 0.0 for zenith
 
 # Target
 config_target = {}
