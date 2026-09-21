@@ -36,7 +36,7 @@ importlib.reload(aspro)
 # Example on a single Strehl #
 ##############################
 
-flag_mode = 'LGS_IR'
+flag_mode = 'LGS_VIS'
 
 # Target
 config_target = {}

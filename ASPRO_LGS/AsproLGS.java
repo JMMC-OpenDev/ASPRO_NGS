@@ -1,3 +1,5 @@
+package fr.jmmc.jmal.gpao;
+
 /*
  * 'aspro' module defining different functions and methods
  * (Java translation of ASPRO_LGS/aspro.py)
@@ -33,12 +35,12 @@ public final class AsproLGS {
     // ------------------------------------------------------------------
     // Configuration containers (mirroring the Python dictionaries)
     // ------------------------------------------------------------------
-
     /**
      * Strehl damping parameters fitted with TIPTOP (config_Strehl).
      * Unused coefficient sets for a given mode are left {@code null}.
      */
     public static final class StrehlConfig {
+
         /** geometric error (fitting + aliasing) */
         public double[] geom;
         /** cone effect (LGS modes only) */
@@ -74,6 +76,7 @@ public final class AsproLGS {
      * Fields not relevant to a given WFS are left as {@code NaN}.
      */
     public static final class WfsConfig {
+
         /** Telescope diameter (m) */
         public double D_tel = Double.NaN;
         /** Global transmission of the WFS channel (to compute the number of photons) */
@@ -111,6 +114,7 @@ public final class AsproLGS {
 
     /** Result of {@link #getModeConfig(String)}: the three configurations of a GPAO mode. */
     public static final class ModeConfig {
+
         /** Strehl parameters fitted with TIPTOP */
         public final StrehlConfig configStrehl;
         /** configuration of the NGS WFS (HO in NGS modes / LO in LGS modes) */
@@ -127,6 +131,7 @@ public final class AsproLGS {
 
     /** Configuration of the target (config_target). */
     public static final class TargetConfig {
+
         /** Wavelength of the target (science or fringe tracker) channel (m) */
         public double wavelength;
         /** Pointing angle to zenith for the airmass (deg) */
@@ -143,28 +148,52 @@ public final class AsproLGS {
 
     /** Configuration of the turbulence (config_turbulence). */
     public static final class TurbulenceConfig {
+
         /** Fried's parameter @500 nm (m) */
         public double r_0;
         /** Wind speed of the turbulence layers (m.s-1) (one value per layer) (for isoplanetism) */
-        public double[] v_0;
+        public double v_0;
         /** Altitude of the turbulent layers (m) (one value per layer) (for isoplanetism) */
-        public double[] h_0;
+        public double h_0;
         /** Cn2 weight (one value per layer) (for collapsing h_0 and v_0 to an equivalent individual layer) */
-        public double[] Cn2;
+        public double Cn2;
 
         public TurbulenceConfig() {
         }
 
-        public TurbulenceConfig(final double r_0, final double[] v_0, final double[] h_0, final double[] Cn2) {
+        public TurbulenceConfig(final double r_0, final double v_0, final double h_0, final double Cn2) {
             this.r_0 = r_0;
             this.v_0 = v_0;
             this.h_0 = h_0;
             this.Cn2 = Cn2;
         }
+
+        /* derived */
+        public double seeing;
+        public double tau0;
+
+        public void setTurbulenceConfig(final double seeing, final double tau0, final double h0) {
+            this.seeing = seeing; // as
+            this.tau0 = tau0; // ms
+
+            this.h_0 = h0;
+            this.Cn2 = 1.0;
+
+            // seeing (as) gives r0:
+            this.r_0 = (1.028993 * (0.5e-6 / this.seeing) / Math.PI * (180.0 * 3600.0)); // m
+
+            // tau0 (+r0) gives v0:
+            this.v_0 = (1000.0 * this.r_0 / this.tau0); //  # (m.s-1)
+
+            // Derive seeing & tau0:
+            this.seeing = (1.028993 * (0.5e-6 / this.r_0) / Math.PI * (180.0 * 3600.0)); // as
+            this.tau0 = (1000.0 * this.r_0 / this.v_0); // (ms)
+        }
     }
 
     /** Configuration of the AO system (config_ao). LGS-only fields may be left unset in NGS modes. */
     public static final class AoConfig {
+
         /** Magnitude of the NGS */
         public double magnitude_NGS;
         /** Loop frequency of the NGS loop (Hz) */
@@ -185,6 +214,7 @@ public final class AsproLGS {
 
     /** Result of {@link #modes2eqDM(double, double)}. */
     public static final class EqDM {
+
         /** the pitch of the equivalent DM (m) */
         public final double eqDM_pitch;
         /** the DM number of actuators of the equivalent DM (across the pupil) */
@@ -197,9 +227,40 @@ public final class AsproLGS {
     }
 
     // ------------------------------------------------------------------
+    // LBO: AO configuration
+    // ------------------------------------------------------------------
+    /**
+     * Return the default AOConfig    
+     * @param flagMode 'NGS_VIS' / 'NGS_IR' / 'LGS_VIS' / 'LGS_IR'
+     * @return default AOConfig    
+     */
+    public static AoConfig getAoConfig(final String flagMode) {
+        final AoConfig configAo = new AoConfig();
+        configAo.magnitude_NGS = 0.0;
+
+        if (isNGS(flagMode)) {
+            configAo.n_mode = 500.0;
+            configAo.f_loop_NGS = 1000.0;
+            configAo.g_loop_NGS = 0.5;
+            configAo.f_loop_LGS = 1000.0;
+            configAo.g_loop_LGS = 0.5;
+        } else {
+            configAo.magnitude_NGS = 0.0;
+            configAo.n_mode = 500.0;
+            configAo.f_loop_NGS = 500.0;
+            configAo.g_loop_NGS = 0.3;
+            configAo.f_loop_LGS = 1000.0;
+            configAo.g_loop_LGS = 0.5;
+        }
+        configAo.theta_NGS = 0.0;
+        configAo.theta_LGS = 0.0;
+
+        return configAo;
+    }
+
+    // ------------------------------------------------------------------
     // GPAO modes
     // ------------------------------------------------------------------
-
     /**
      * Load the GPAO modes configuration based on the TIPTOP fit.
      *
@@ -342,7 +403,6 @@ public final class AsproLGS {
     // ------------------------------------------------------------------
     // Strehl functions
     // ------------------------------------------------------------------
-
     /**
      * Geometric error = fitting + aliasing.
      *
@@ -595,7 +655,7 @@ public final class AsproLGS {
 
         // Loading atmosphere
         final double r_0 = configTurbulence.r_0;
-        final double[] Cn2 = configTurbulence.Cn2;
+        final double Cn2 = configTurbulence.Cn2;
         final double h_0 = cn2WeightedLayer(Cn2, configTurbulence.h_0, false);
         final double v_0 = cn2WeightedLayer(Cn2, configTurbulence.v_0, true);
 
@@ -646,15 +706,15 @@ public final class AsproLGS {
             final double SR_lag = strehlLagLGS(coeff_lag, airmass, v_0, r_0, wavelength_target,
                     configAo.f_loop_LGS, g_loop_LGS, f_loop_NGS, g_loop_NGS);
             final double SR_ph
-                    = strehlPh(new double[]{coeff_ph_ron_LGS[0]}, n_ph_LGS, wavelength_target,
-                            arcsecond2rad(1.0) * configWFS_LGS.D_WFS, g_loop_LGS, configWFS_LGS.ExcessNoiseFactor)
+                         = strehlPh(new double[]{coeff_ph_ron_LGS[0]}, n_ph_LGS, wavelength_target,
+                    arcsecond2rad(1.0) * configWFS_LGS.D_WFS, g_loop_LGS, configWFS_LGS.ExcessNoiseFactor)
                     * strehlPh(new double[]{coeff_ph_ron_LO[0]}, n_ph_NGS, wavelength_target,
-                            configWFS_NGS.wavelength, g_loop_NGS, configWFS_NGS.ExcessNoiseFactor);
+                    configWFS_NGS.wavelength, g_loop_NGS, configWFS_NGS.ExcessNoiseFactor);
             final double SR_ron
-                    = strehlRon(new double[]{coeff_ph_ron_LGS[1]}, configWFS_LGS.sig_RON, n_ph_LGS,
-                            configWFS_LGS.pixScale, configWFS_LGS.n_pix, g_loop_LGS)
+                         = strehlRon(new double[]{coeff_ph_ron_LGS[1]}, configWFS_LGS.sig_RON, n_ph_LGS,
+                    configWFS_LGS.pixScale, configWFS_LGS.n_pix, g_loop_LGS)
                     * strehlRon(new double[]{coeff_ph_ron_LO[1]}, configWFS_NGS.sig_RON, n_ph_NGS,
-                            configWFS_NGS.pixScale, configWFS_NGS.n_pix, g_loop_NGS);
+                    configWFS_NGS.pixScale, configWFS_NGS.n_pix, g_loop_NGS);
             final double SR_iso = strehlIsoLGS(coeff_iso, airmass, Math.abs(configAo.theta_LGS),
                     Math.abs(configAo.theta_NGS), h_0, r_0, wavelength_target);
 
@@ -675,25 +735,20 @@ public final class AsproLGS {
      * @param useAbs if true, the absolute value of each layer value is used
      * @return the equivalent single-layer value
      */
-    private static double cn2WeightedLayer(final double[] Cn2, final double[] values, final boolean useAbs) {
-        if (Cn2.length != values.length) {
-            throw new IllegalArgumentException("Cn2 and layer arrays must have the same length: "
-                    + Cn2.length + " != " + values.length);
-        }
+    private static double cn2WeightedLayer(final double Cn2, final double values, final boolean useAbs) {
         double num = 0.0;
         double den = 0.0;
-        for (int i = 0; i < Cn2.length; i++) {
-            final double v = useAbs ? Math.abs(values[i]) : values[i];
-            num += Cn2[i] * Math.pow(v, 5.0 / 3.0);
-            den += Cn2[i];
-        }
+//        for (int i = 0; i < Cn2.length; i++) {
+        final double v = useAbs ? Math.abs(values/*[i]*/) : values/*[i]*/;
+        num += Cn2/*[i]*/ * Math.pow(v, 5.0 / 3.0);
+        den += Cn2/*[i]*/;
+        //      }
         return Math.pow(num / den, 3.0 / 5.0);
     }
 
     // ------------------------------------------------------------------
     // Miscellaneous
     // ------------------------------------------------------------------
-
     /**
      * Convert arcsecond in radians.
      *
@@ -774,7 +829,6 @@ public final class AsproLGS {
     // ------------------------------------------------------------------
     // Example (single Strehl, see examples_ASPRO.ipynb)
     // ------------------------------------------------------------------
-
     /**
      * Example on a single Strehl: reproduces the first example of examples_ASPRO.ipynb.
      *
@@ -782,26 +836,18 @@ public final class AsproLGS {
      */
     public static void main(final String[] args) {
         // Target
-        final String flagMode = "LGS_IR";
-        final TargetConfig configTarget = new TargetConfig(2.2e-06, 15.0);
+        final String flagMode = "LGS_VIS";
+        final TargetConfig configTarget = new TargetConfig(2.2e-06, 0.0);
+
+        // Turbulence
+        final TurbulenceConfig configTurbulence = new TurbulenceConfig(0.100, 15.0, 1500.0, 1.0);
 
         // Loading TIPTOP fit and configuration
         final ModeConfig modeConfig = getModeConfig(flagMode);
 
-        // Turbulence
-        final TurbulenceConfig configTurbulence = new TurbulenceConfig(0.100,
-                new double[]{15.0}, new double[]{1500.0}, new double[]{1.0});
-
         // AO configuration
-        final AoConfig configAo = new AoConfig();
+        final AoConfig configAo = getAoConfig(flagMode);
         configAo.magnitude_NGS = 8;
-        configAo.n_mode = 500;
-        configAo.f_loop_NGS = 500;
-        configAo.g_loop_NGS = 0.5;
-        configAo.theta_NGS = 0;
-        configAo.f_loop_LGS = 1000;
-        configAo.g_loop_LGS = 0.5;
-        configAo.theta_LGS = 0;
 
         // Running Maréchal approximation
         final double SR = computeMarechal(flagMode, configTarget, configTurbulence, configAo, modeConfig);
