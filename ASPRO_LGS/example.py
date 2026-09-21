@@ -1,3 +1,4 @@
+#####################################################################
 # File to apply the Maréchal approximation for the different GPAOs modes
 #   - NGS_VIS   -> 40x40 SH-WFS
 #   - NGS_IR    -> 9x9 SH-WFS
@@ -6,7 +7,15 @@
 #
 # Created: 06/09/2023 (mm/dd/yyyy)
 # Author: Anthony Berdeu (LIRA - Observatoire de Paris)
-########################################################################
+# License: GPL3 (see LICENSE)
+#
+# This project has received funding from the European Union's Horizon 2020 research and innovation programme under grant agreement No 101004719.
+#
+#####################################################################
+
+
+
+
 
 #######################
 # IMPORTING LIBRARIES #
@@ -27,14 +36,12 @@ importlib.reload(aspro)
 # Example on a single Strehl #
 ##############################
 
-# Target
 flag_mode = 'LGS_IR'
+
+# Target
 config_target = {}
 config_target['wavelength'] = 2.2e-06 # Wavelength of the target (science or fringe tracker) channel (m)
-config_target['zenith'] = 15 # Pointing angle to zenith for the airmass (deg)
-
-# Loading TIPTOP fit and configuration
-[config_Strehl, config_WFS_NGS, config_WFS_LGS] = aspro.get_mode_config(flag_mode)
+config_target['zenith'] = 0.0 # Pointing angle to zenith for the airmass (deg)
 
 # Turbulence
 config_turbulence = {}
@@ -46,18 +53,17 @@ config_turbulence['Cn2'] = [1] # Cn2 weight (could be a list) (for collapsing h_
 #config_turbulence['h_0'] = [30, 562, 4500, 7750, 14000] # Altitude of the turbulent layers (m) (could be a list) (for isoplanetism)
 # config_turbulence['Cn2'] = [12.3, 8.3, 30.4, 56, 32] # Cn2 weight (could be a list) (for collapsing h_0 and v_0 to an equivalent individual layer)
 
-
 # AO configuration
-config_ao = {}
-config_ao['magnitude_NGS'] = 8
-config_ao['n_mode'] = 500
-config_ao['f_loop_NGS'] = 500
-config_ao['g_loop_NGS'] = 0.5
-config_ao['f_loop_LGS'] = 1000
-config_ao['g_loop_LGS'] = 0.5
-config_ao['theta_NGS'] = 0
-config_ao['theta_LGS'] = 0
+config_ao = aspro.get_mode_config_ao(flag_mode)
+
+# Loading TIPTOP fit and configuration
+[config_Strehl, config_WFS_NGS, config_WFS_LGS] = aspro.get_mode_config(flag_mode)
+
+
+##################################
+# TESTING MARECHAL APPROXIMATION #
+##################################
 
 # Running Maréchal approximation
-SR_Maréchal = aspro.compute_Maréchal(flag_mode, config_target, config_turbulence, config_ao, config_Strehl, config_WFS_NGS, config_WFS_LGS)
-print('Strehl ratio: ', SR_Maréchal)
+SR_Marechal = aspro.compute_Marechal(flag_mode, config_target, config_turbulence, config_ao, config_Strehl, config_WFS_NGS, config_WFS_LGS)
+print('Strehl ratio: ', SR_Marechal)

@@ -1,9 +1,9 @@
-# ![JMMC logo](https://github.com/JMMC-OpenDev/.github/blob/main/doc/JMMC-logo.jpg) OpenDev - ASPRO_NGS
-GPAO NGS's python module for ASPRO2 to compute the strehl ratio of GRAVITY+ AO
+# ![JMMC logo](https://github.com/JMMC-OpenDev/.github/blob/main/doc/JMMC-logo.jpg) OpenDev - ASPRO_NGS / LGS
+GPAO NGS's python module for ASPRO2 to compute the strehl ratio of GRAVITY+ AO (GPAO)
 
 - Created: 2023.09 (yyyy.mm)
 
-- Author: Anthony Berdeu (LESIA - Observatoire de Paris)
+- Author: Anthony Berdeu (LIRA - Observatoire de Paris)
 
 
 ## Links:

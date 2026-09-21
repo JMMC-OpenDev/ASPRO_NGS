@@ -33,6 +33,7 @@ tau0_values = np.array([5.2, 4.4, 4.1, 3.2, 2.2, 1.6])
 # Median $8 * $10 = median (MASS Turb Altitude [m] * MASS-DIMM Cn2 fraction at ground)
 ho_values = np.array([5850.0, 5250.0, 4650.0, 3700.0, 3200.0, 2700.0])
 
+
 # used turbulence config derived from (seeing, tau0 and h0 values)
 config_turbulence = {}
 
@@ -73,11 +74,6 @@ def computeStrehl_UT_NGS(flag_mode, target_ao_mag, distance_ao_as, iso=False):
     if flag_mode[4:7] != "VIS" and flag_mode[4:7] != "IR":
         raise ValueError(flag_mode + " -> Unknown mode (*_VIS / *_IR)")
 
-    # NGS
-    config_NGS = {}
-    config_NGS['magnitude'] = target_ao_mag  # Magnitude of the NGS
-    config_NGS['zenith'] = 0.0  # For the airmass (deg), 0.0 for zenith
-
     # Target
     config_target = {}
     config_target['wavelength'] = 2.2e-06 # Wavelength of the target (science or fringe tracker) channel (m)
@@ -90,6 +86,11 @@ def computeStrehl_UT_NGS(flag_mode, target_ao_mag, distance_ao_as, iso=False):
     config_ao['sig_RON'] = 0.2 # Readout noise of the camera
     config_ao['ExcessNoiseFactor'] = 2 # Excess noise factor
     config_ao['g_loop'] = 0.5 # Loop gain
+
+    # NGS
+    config_NGS = {}
+    config_NGS['magnitude'] = target_ao_mag  # Magnitude of the NGS
+    config_NGS['zenith'] = 0.0  # For the airmass (deg), 0.0 for zenith
     ##### User parameters #####
 
     ##### Mode-dependent variables #####

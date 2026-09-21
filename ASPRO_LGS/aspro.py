@@ -1,5 +1,5 @@
 # 'aspro' module defining different functions and methodes
-# 
+#
 # Created: 09/21/2023 (mm/dd/yyyy)
 # Author: Anthony Berdeu (LESIA - Observatoire de Paris)
 #####################################################################
@@ -14,6 +14,30 @@ import numpy as np
 #######################
 
 
+# LBO: AO configuration
+def get_mode_config_ao(flag_mode):
+    config_ao = {}
+    if flag_mode[0:3] == 'NGS':
+        config_ao['magnitude_NGS'] = 0.0
+        config_ao['n_mode'] = 500.0
+        config_ao['f_loop_NGS'] = 1000.0
+        config_ao['g_loop_NGS'] = 0.5
+        config_ao['f_loop_LGS'] = 1000.0
+        config_ao['g_loop_LGS'] = 0.5
+    else:
+        config_ao['magnitude_NGS'] = 0.0
+        config_ao['n_mode'] = 500.0
+        config_ao['f_loop_NGS'] = 500.0
+        config_ao['g_loop_NGS'] = 0.3
+        config_ao['f_loop_LGS'] = 1000.0
+        config_ao['g_loop_LGS'] = 0.5
+
+    config_ao['theta_NGS'] = 0.0
+    config_ao['theta_LGS'] = 0.0
+
+    return config_ao
+
+
 ##############
 # GPAO modes #
 # Function to load the GPAO modes configuration based on the TIPTOP fit
@@ -23,12 +47,12 @@ import numpy as np
 #   - config_WFS_NGS: configuration of the NGS WFS (HO in NGS modes / LO in LGS modes)
 #   - config_WFS_LGS: configuration of the LGS WFS (LGS modes)
 def get_mode_config(flag_mode):
-    
+
     ##### General parameters #####
     D_tel = 8.0 # Telescope diameter (m)
     transmission = 0.3 # Global transmission of the WFS channel (to compute the number of photons)
     sig_RON = 0.2 # Readout noise of the camera
-    ExcessNoiseFactor = 2 # Excess noise factor
+    ExcessNoiseFactor = 2.0 # Excess noise factor
     ##### General parameters #####
 
     ##### Initialization #####
@@ -52,21 +76,21 @@ def get_mode_config(flag_mode):
 
     if flag_mode == 'NGS_VIS':
         # config_WFS_NGS
-        config_WFS_NGS['SH_diam'] = 40
-        config_WFS_NGS['pixScale'] = 420/1000 # arcsecond
-        config_WFS_NGS['n_pix'] = 6
+        config_WFS_NGS['SH_diam'] = 40.0
+        config_WFS_NGS['pixScale'] = 420.0/1000.0 # arcsecond
+        config_WFS_NGS['n_pix'] = 6.0
 
     elif flag_mode == 'LGS_VIS':
         # config_WFS_NGS
-        config_WFS_NGS['SH_diam'] = 4
-        config_WFS_NGS['pixScale'] = 210/1000 # arcsecond
-        config_WFS_NGS['n_pix'] = 12
+        config_WFS_NGS['SH_diam'] = 4.0
+        config_WFS_NGS['pixScale'] = 210.0/1000.0 # arcsecond
+        config_WFS_NGS['n_pix'] = 12.0
 
     elif flag_mode[4:6] == 'IR':
         # config_WFS_NGS
-        config_WFS_NGS['SH_diam'] = 9
-        config_WFS_NGS['pixScale'] = 510/1000 # arcsecond
-        config_WFS_NGS['n_pix'] = 8
+        config_WFS_NGS['SH_diam'] = 9.0
+        config_WFS_NGS['pixScale'] = 510.0/1000.0 # arcsecond
+        config_WFS_NGS['n_pix'] = 8.0
 
     # Lenslet diameter
     config_WFS_NGS['D_WFS'] = D_tel / config_WFS_NGS['SH_diam']
@@ -75,12 +99,12 @@ def get_mode_config(flag_mode):
     config_WFS_LGS['sig_RON'] = sig_RON
     config_WFS_LGS['ExcessNoiseFactor'] = ExcessNoiseFactor
 
-    config_WFS_LGS['SH_diam'] = 9
-    config_WFS_LGS['pixScale'] = 800/1000 # arcsecond
-    config_WFS_LGS['n_pix'] = 6
+    config_WFS_LGS['SH_diam'] = 9.0
+    config_WFS_LGS['pixScale'] = 800.0/1000.0 # arcsecond
+    config_WFS_LGS['n_pix'] = 6.0
 
-    config_WFS_LGS['h_LGS'] = 90000 # Sodium layer height (m)
-    config_WFS_LGS['n_ph'] = 50
+    config_WFS_LGS['h_LGS'] = 90000.0 # Sodium layer height (m)
+    config_WFS_LGS['n_ph'] = 50.0
 
     # Lenslet diameter
     config_WFS_LGS['D_WFS'] = D_tel / config_WFS_LGS['SH_diam']
@@ -124,8 +148,8 @@ def get_mode_config(flag_mode):
     else:
         raise ValueError(flag_mode + \
             ' -> Unknown mode (NGS_VIS / NGS_IR / LGS_VIS / LGS_IR)')
-    
-    
+
+
     if flag_mode[4:7] == 'VIS':
         # config_WFS_NGS
         config_WFS_NGS['wavelength'] = 750e-9
@@ -352,7 +376,7 @@ def Strehl_cone(coeff, airmass, h_0, h_lgs, D_tel, r_0, wavelength):
 #       ['h_LGS']               -> Sodium layer height (m)
 # OUTPUTS
 #   - SR: the global Strehl ratio
-def compute_Maréchal(flag_mode, config_target, config_turbulence, config_ao, config_Strehl, config_WFS_NGS, config_WFS_LGS):
+def compute_Marechal(flag_mode, config_target, config_turbulence, config_ao, config_Strehl, config_WFS_NGS, config_WFS_LGS):
     ##### Loading configuration #####
     # Loading target
     wavelength_target = config_target['wavelength']
@@ -464,8 +488,8 @@ def mag2nph(magnitude, mag2flux, transmission, D_WFS, f_loop):
 #   - n_mode_AO: number of corrected modes by the AO system
 #   - D_tel: telescope diameter
 # OUTPUTS
-#   - eqDM_pitch: the pitch of the equivalent DM 
-#   - eqDMn_act: the DM number of actuator of the equivalent DM 
+#   - eqDM_pitch: the pitch of the equivalent DM
+#   - eqDMn_act: the DM number of actuator of the equivalent DM
 def modes2eqDM(n_mode_AO, D_tel):
     # Equivalent number of actuators accross the pupil
     eqDMn_act = 2*(n_mode_AO/np.pi)**0.5

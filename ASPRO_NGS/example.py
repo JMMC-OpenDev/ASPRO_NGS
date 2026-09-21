@@ -37,22 +37,17 @@ importlib.reload(aspro)
 # Mode to simulate
 flag_mode = 'NGS_VIS' # NGS_VIS/NGS_IR
 
+# Target
+config_target = {}
+config_target['wavelength'] = 2.2e-06 # Wavelength of the target (science or fringe tracker) channel (m)
+config_target['theta'] = 0 # Angle between the target (science or fringe tracker) and the NGS (arcsecond)
+
 # Turbulence
 config_turbulence = {}
 config_turbulence['r_0'] = 0.100 # Fried's parameter @500 nm (m)
 config_turbulence['v_0'] = [25.0] # Wind speed of the turbulence layers (m.s-1) (could be a list) (for isoplanetism)
 config_turbulence['h_0'] = [10000.0] # Altitude of the turbulent layers (m) (could be a list) (for isoplanetism)
 config_turbulence['Cn2'] = [1] # Cn2 weight (could be a list) (for collapsing h_0 and v_0 to an equivalent individual layer)
-
-# NGS
-config_NGS = {}
-config_NGS['magnitude'] = 8 # Magnitude of the NGS
-config_NGS['zenith'] = 0.0  # For the airmass (deg), 0.0 for zenith
-
-# Target
-config_target = {}
-config_target['wavelength'] = 2.2e-06 # Wavelength of the target (science or fringe tracker) channel (m)
-config_target['theta'] = 0 # Angle between the target (science or fringe tracker) and the NGS (arcsecond)
 
 # AO system
 config_ao = {}
@@ -61,6 +56,11 @@ config_ao['transmission'] = 0.3 # Global transmission of the WFS channel (to com
 config_ao['sig_RON'] = 0.2 # Readout noise of the camera
 config_ao['ExcessNoiseFactor'] = 2 # Excess noise factor
 config_ao['g_loop'] = 0.5 # Loop gain
+
+# NGS
+config_NGS = {}
+config_NGS['magnitude'] = 0.0 # Magnitude of the NGS
+config_NGS['zenith'] = 0.0  # For the airmass (deg), 0.0 for zenith
 ##### User parameters #####
 
 
@@ -125,4 +125,3 @@ else:
 # Running Maréchal approximation
 SR_Marechal = aspro.compute_Marechal_NGS(config_NGS, config_target, config_ao, config_turbulence, config_Strehl)
 print('Strehl ratio: ', SR_Marechal)
-
