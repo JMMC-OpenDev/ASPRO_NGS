@@ -196,26 +196,27 @@ def plotStrehlIso(flag_mode):
 
     dists_AO = np.arange(0.0, 30.0, 0.2, dtype=float)
 
-    for i in range(len(seeing_values)):
-        seeing = seeing_values[i]
-        setConfigTurbulence(seeing, tau0_values[i], ho_values[i])
+    for s in range(len(seeing_values)):
+        seeing = seeing_values[s]
+        setConfigTurbulence(seeing, tau0_values[s], ho_values[s])
 
         sr_iso = np.zeros_like(dists_AO)
 
         print("distance_ao_as\tstrehl_ratio")
 
-        for i in range(len(dists_AO)):
-            distance_ao_as = dists_AO[i]  # as
+        for d in range(len(dists_AO)):
+            distance_ao_as = dists_AO[d]  # as
 
-            sr_iso[i] = computeStrehl_UT_NGS(flag_mode, ao_Rmag, distance_ao_as, True)
-            print(f"{distance_ao_as:.2f}\t{sr_iso[i]:.4e}")
+            sr_iso[d] = computeStrehl_UT_NGS(flag_mode, ao_Rmag, distance_ao_as, True)
+            print(f"{distance_ao_as:.2f}\t{sr_iso[d]:.4e}")
 
         plt.plot(dists_AO, sr_iso, marker='o', label=f"seeing: {seeing:.2f}")
 
     plt.xlabel('dist (as)')
     plt.ylabel('SR_iso')
-    plt.ticklabel_format(style='sci', axis='y', scilimits=(0, 0))
+    plt.ylim(0.0, 1.0)
     plt.grid(True)
+    plt.title(f"Strehl_iso(dist)")
     plt.legend()
     plt.show()
 
@@ -226,27 +227,28 @@ def plotStrehlMag(flag_mode):
     distance_ao_as = 0.0
     mags_AO = np.arange(0.0, 20.0, 0.25, dtype=float)
 
-    for i in range(len(seeing_values)):
-        seeing = seeing_values[i]
-        setConfigTurbulence(seeing, tau0_values[i], ho_values[i])
+    for s in range(len(seeing_values)):
+        seeing = seeing_values[s]
+        setConfigTurbulence(seeing, tau0_values[s], ho_values[s])
 
         sr = np.zeros_like(mags_AO)
 
         print("ao_mag\tstrehl_ratio")
 
-        for i in range(len(mags_AO)):
-            ao_mag = mags_AO[i]  # as
+        for a in range(len(mags_AO)):
+            ao_mag = mags_AO[a]  # as
 
-            sr[i] = computeStrehl_UT_NGS(flag_mode, ao_mag, distance_ao_as, False)
-            print(f"{ao_mag:.2f}\t{sr[i]:.4e}")
+            sr[a] = computeStrehl_UT_NGS(flag_mode, ao_mag, distance_ao_as, False)
+            print(f"{ao_mag:.2f}\t{sr[a]:.4e}")
 
         plt.plot(mags_AO, sr, marker='o', label=f"seeing: {seeing:.2f}")
 
     plt.xlabel('AO mag')
     plt.ylabel('SR_GPAO')
-    plt.ticklabel_format(style='sci', axis='y', scilimits=(0, 0))
+    plt.ylim(0.0, 1.0)
     plt.grid(True)
     plt.legend()
+    plt.title(f"Strehl_UT_NGS[{flag_mode}](AO mag)")
     plt.show()
 
 # --- main ---
