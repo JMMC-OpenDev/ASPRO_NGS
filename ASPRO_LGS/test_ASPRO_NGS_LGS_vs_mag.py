@@ -153,7 +153,7 @@ for i in range(nb_test):
 
             print(f"magnitude_NGS = {list_mag[mag]:.2f} - SR = {list_SR_Marechal[mag]:.3f} ({list_flag_mode[i]})")
 
-        plt.plot(list_mag, list_SR_Marechal, label = f"{list_label[i]} seeing: {seeing:.2f}", linestyle=linestyle)
+        plt.plot(list_mag, list_SR_Marechal, marker='.', label = f"{list_label[i]} seeing: {seeing:.2f}", linestyle=linestyle)
 
 ##### Maréchal #####
 

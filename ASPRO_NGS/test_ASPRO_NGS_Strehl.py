@@ -189,14 +189,18 @@ def plotStrehlIso(flag_mode):
             sr_iso[d] = computeStrehl_UT_NGS(flag_mode, ao_Rmag, distance_ao_as, True)
             print(f"{distance_ao_as:.2f}\t{sr_iso[d]:.4e}")
 
-        plt.plot(dists_AO, sr_iso, marker='o', label=f"seeing: {seeing:.2f}")
+        plt.plot(dists_AO, sr_iso, marker='.', label=f"seeing: {seeing:.2f}")
 
     plt.xlabel('dist (as)')
-    plt.ylabel('SR_iso')
+    plt.ylabel('Strehl_ISO (%)')
+    plt.title(f"Strehl_iso(dist)")
+    plt.xlim(0.0, 30.0)
+    plt.locator_params(axis='x', nbins=30)
+    plt.locator_params(axis='y', nbins=20)
     plt.ylim(0.0, 1.0)
     plt.grid(True)
-    plt.title(f"Strehl_iso(dist)")
     plt.legend()
+    plt.tight_layout(pad=0.05)
     plt.show()
 
 
@@ -220,14 +224,18 @@ def plotStrehlMag(flag_mode):
             sr[a] = computeStrehl_UT_NGS(flag_mode, ao_mag, distance_ao_as, False)
             print(f"{ao_mag:.2f}\t{sr[a]:.4e}")
 
-        plt.plot(mags_AO, sr, marker='o', label=f"seeing: {seeing:.2f}")
+        plt.plot(mags_AO, sr, marker='.', label=f"seeing: {seeing:.2f}")
 
     plt.xlabel('AO mag')
-    plt.ylabel('SR_GPAO')
+    plt.ylabel('Strehl_NGS (%)')
+    plt.title(f"Strehl_UT_NGS[{flag_mode}](AO mag)")
+    plt.xlim(0.0, 22.0)
+    plt.locator_params(axis='x', nbins=22)
+    plt.locator_params(axis='y', nbins=10)
     plt.ylim(0.0, 1.0)
     plt.grid(True)
     plt.legend()
-    plt.title(f"Strehl_UT_NGS[{flag_mode}](AO mag)")
+    plt.tight_layout(pad=0.05)
     plt.show()
 
 
