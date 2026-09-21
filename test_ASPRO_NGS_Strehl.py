@@ -12,13 +12,31 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
+# --- aspro wrapper ---
 trace = True
 
+# Using ESO turbulence categories:
+#     - GRAVITY: https://www.eso.org/sci/observing/phase2/ObsConditions.GRAVITY.html
+#         More specifically, the categories are:
+#                 T < 10%, corresponding to seeing ≤ 0.60“ and τ0 > 5.2ms
+#                 T < 20%, corresponding to seeing ≤ 0.70“ and τ0 > 4.4ms
+#                 T < 30%, corresponding to seeing ≤ 0.80“ and τ0 > 4.1ms
+#                 T < 50%, corresponding to seeing ≤ 1.00“ and τ0 > 3.2ms
+#                 T < 70%, corresponding to seeing ≤ 1.15“ and τ0 > 2.2ms
+#                 T < 85%, corresponding to seeing ≤ 1.40“ and τ0 > 1.6ms
+#         For conditions worse than T = 85%, no GRAVITY operations are possible
+
+seeing_values = np.array([0.60, 0.70, 0.80, 1.00, 1.15, 1.40])
+tau0_values = np.array([5.2, 4.4, 4.1, 3.2, 2.2, 1.6])
+
+# from http://archive.eso.org/wdb/wdb/asm/mass_paranal/form:
+# Median $8 * $10 = median (MASS Turb Altitude [m] * MASS-DIMM Cn2 fraction at ground)
+ho_values = np.array([5850.0, 5250.0, 4650.0, 3700.0, 3200.0, 2700.0])
+
+# used turbulence config derived from (seeing, tau0 and h0 values)
 config_turbulence = {}
 
-
 def setConfigTurbulence(seeing, tau0, h0):
-
     config_turbulence['seeing'] = seeing
     config_turbulence['tau0'] = tau0  # (ms)
     config_turbulence['h_0'] = h0  # Altitude of the turbulent layers (m) (could be a list) (for isoplanetism)
@@ -44,6 +62,8 @@ def setConfigTurbulence(seeing, tau0, h0):
         print(f"- r0:     {100.0 * config_turbulence['r_0']:.2f} cm")
         print(f"- tau0:   {config_turbulence['tau0']:.2f} ms")
         print(f"- v0:     {config_turbulence['v_0']:.3f} m.s-1")
+
+# --- aspro wrapper ---
 
 
 def computeStrehl_UT_NGS(flag_mode, target_ao_mag, distance_ao_as, iso=False):
@@ -116,45 +136,6 @@ def computeStrehl_UT_NGS(flag_mode, target_ao_mag, distance_ao_as, iso=False):
     ##### Calibration of the Maréchal approximation #####
 
 
-    # Running Maréchal approximation (Anthony Berdeu, LESIA, OBSPM)
-    # return aspro.compute_Marechal_NGS(config_NGS, config_target, config_ao, config_turbulence, config_Strehl)
-
-    ##### Computing individual Strehl contributions #####
-
-    ##### Loading configuration #####
-
-    # Loading atmosphere
-    r_0 = config_turbulence['r_0']
-    Cn2 = config_turbulence['Cn2']
-    h_0 = config_turbulence['h_0']
-    h_0 = (np.sum(Cn2 * np.power(h_0, 5.0 / 3.0)) / np.sum(Cn2))**(3.0 / 5.0)
-    v_0 = config_turbulence['v_0']
-    v_0 = (np.sum(Cn2 * np.power(np.abs(v_0), 5.0 / 3.0)) / np.sum(Cn2))**(3.0 / 5.0)
-
-    # Loading AO system
-    ExcessNoiseFactor = config_ao['ExcessNoiseFactor']
-    sigRON = config_ao['sig_RON']
-    pixScale = config_ao['pixScale'] / 1000.0 # arcsecond
-    [eqDM_pitch, eqDMn_act] = aspro.modes2eqDM(config_ao)
-    f_loop = config_ao['f_loop']
-    g_loop = config_ao['g_loop']
-    n_pix = config_ao['n_pix']
-    D_WFS = config_ao['TelescopeDiameter'] / config_ao['SH_diam']
-
-
-    # Loading NGS
-    wavelength_NGS = config_NGS['wavelength']
-    n_ph = config_ao['transmission'] * D_WFS**2 * \
-        config_NGS['mag2flux'] * 10.0**(-config_NGS['magnitude'] / 2.5) / f_loop
-    zenith_angle = config_NGS['zenith']
-    airmass = 1.0 / np.cos(np.radians(zenith_angle))
-
-
-
-    # Loading target
-    wavelength_target = config_target['wavelength']
-    theta = config_target['theta']
-
     # Loading Strehl damping coefficient
     coeff_geom = config_Strehl['geom']
     coeff_lag = config_Strehl['lag']
@@ -164,28 +145,25 @@ def computeStrehl_UT_NGS(flag_mode, target_ao_mag, distance_ao_as, iso=False):
     ##### Loading configuration #####
 
 
-
     if iso:
+        zenith_angle = config_NGS['zenith']
+        airmass = 1.0 / np.cos(np.radians(zenith_angle))
+
+        # Loading target
+        wavelength_target = config_target['wavelength']
+        theta = config_target['theta']
+
+         # Loading atmosphere
+        r_0 = config_turbulence['r_0']
+        h_0 = config_turbulence['h_0']
+        Cn2 = config_turbulence['Cn2']
+        h_0 = (np.sum(Cn2 * np.power(h_0, 5.0 / 3.0)) / np.sum(Cn2))**(3.0 / 5.0)
+
         # print(f"Strehl_iso: coeff_iso={coeff_iso} airmass={airmass} theta={theta} h_0={h_0} r_0={r_0} wavelength={wavelength_target}")
         return aspro.Strehl_iso(coeff_iso, airmass, theta, h_0, r_0, wavelength_target)
 
-    ##### Computing individual Strehl contributions #####
-    SR_geom = aspro.Strehl_geom(coeff_geom, airmass, eqDM_pitch, r_0, wavelength_target)
-    SR_lag = aspro.Strehl_lag(coeff_lag, airmass, v_0, r_0, wavelength_target, f_loop, g_loop)
-    SR_ph = aspro.Strehl_ph(coeff_ph, n_ph, wavelength_target, wavelength_NGS, g_loop, ExcessNoiseFactor)
-    SR_ron = aspro.Strehl_ron(coeff_ron, sigRON, n_ph, pixScale, n_pix, g_loop)
-    SR_iso = aspro.Strehl_iso(coeff_iso, airmass, theta, h_0, r_0, wavelength_target)
-    ##### Computing individual Strehl contributions #####
-
-    # print(f"SR_geom: {SR_geom}")
-    # print(f"SR_lag:  {SR_lag}")
-    # print(f"SR_ph:   {SR_ph}")
-    # print(f"SR_ron:  {SR_ron}")
-    # print(f"SR_iso:  {SR_iso}")
-
-    ##### Output #####
-    SR = SR_geom * SR_lag * SR_ph * SR_ron * SR_iso
-    return SR
+    # Running Maréchal approximation (Anthony Berdeu, LESIA, OBSPM)
+    return aspro.compute_Marechal_NGS(config_NGS, config_target, config_ao, config_turbulence, config_Strehl)
     ##### Output #####
 
 
@@ -251,27 +229,9 @@ def plotStrehlMag(flag_mode):
     plt.title(f"Strehl_UT_NGS[{flag_mode}](AO mag)")
     plt.show()
 
-# --- main ---
+
 if __name__ == "__main__":
     flag_mode = "NGS_VIS"
-
-    # Using ESO turbulence categories:
-    #     - GRAVITY: https://www.eso.org/sci/observing/phase2/ObsConditions.GRAVITY.html
-    #         More specifically, the categories are:
-    #                 T < 10%, corresponding to seeing ≤ 0.60“ and τ0 > 5.2ms
-    #                 T < 20%, corresponding to seeing ≤ 0.70“ and τ0 > 4.4ms
-    #                 T < 30%, corresponding to seeing ≤ 0.80“ and τ0 > 4.1ms
-    #                 T < 50%, corresponding to seeing ≤ 1.00“ and τ0 > 3.2ms
-    #                 T < 70%, corresponding to seeing ≤ 1.15“ and τ0 > 2.2ms
-    #                 T < 85%, corresponding to seeing ≤ 1.40“ and τ0 > 1.6ms
-    #         For conditions worse than T = 85%, no GRAVITY operations are possible
-
-    seeing_values = np.array([0.60, 0.70, 0.80, 1.00, 1.15, 1.40])
-    tau0_values = np.array([5.2, 4.4, 4.1, 3.2, 2.2, 1.6])
-
-    # from http://archive.eso.org/wdb/wdb/asm/mass_paranal/form:
-    # Median $8 * $10 = median (MASS Turb Altitude [m] * MASS-DIMM Cn2 fraction at ground)
-    ho_values = np.array([5850.0, 5250.0, 4650.0, 3700.0, 3200.0, 2700.0])
 
     plotStrehlIso(flag_mode)
     plotStrehlMag(flag_mode)

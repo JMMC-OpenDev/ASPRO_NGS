@@ -123,6 +123,6 @@ else:
 ##################################
 
 # Running Maréchal approximation
-SR_Maréchal = aspro.compute_Marechal_NGS(config_NGS, config_target, config_ao, config_turbulence, config_Strehl)
-print('Strehl ratio: ', SR_Maréchal)
+SR_Marechal = aspro.compute_Marechal_NGS(config_NGS, config_target, config_ao, config_turbulence, config_Strehl)
+print('Strehl ratio: ', SR_Marechal)
 
