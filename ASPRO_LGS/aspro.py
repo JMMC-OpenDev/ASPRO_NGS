@@ -142,8 +142,12 @@ def get_mode_config(flag_mode):
         config_Strehl['cone'] = [0.683, 1.86 ]
         config_Strehl['lag'] = [4.899, 0.857, 1.818]
         config_Strehl['ph_ron_LO'] = [ 7.575e+00, -9.438e-05]
-        config_Strehl['ph_ron_LGS'] = [4.169, 0.35 , 1.958]
-        config_Strehl['iso'] = [5.666, 0.154]
+
+        #config_Strehl['ph_ron_LGS'] = [4.169, 0.35 , 1.958]
+        #config_Strehl['iso'] = [5.666, 0.154]
+        # mistake ?
+        config_Strehl['ph_ron_LGS'] = [5.666, 0.154]
+        config_Strehl['iso'] = [4.169, 0.35 , 1.958]
 
     else:
         raise ValueError(flag_mode + \

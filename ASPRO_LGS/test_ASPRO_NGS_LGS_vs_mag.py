@@ -91,7 +91,7 @@ def setConfigTurbulence(seeing, tau0, h0):
 # Loop on magnitude
 mag_min = 0
 mag_max = 22
-mag_delta = 0.25
+mag_delta = 0.2
 mag_nb = round((mag_max-mag_min)/mag_delta+1)
 list_mag = np.zeros([mag_nb])
 list_mag[:] = np.linspace(mag_min, mag_max, mag_nb)
@@ -100,6 +100,7 @@ list_mag[:] = np.linspace(mag_min, mag_max, mag_nb)
 # Defining cases
 nb_test = 2
 list_flag_mode = ['NGS_VIS', 'LGS_VIS']
+#list_flag_mode = ['NGS_IR', 'LGS_IR']
 
 # Target
 config_target = {}
@@ -153,7 +154,7 @@ for i in range(nb_test):
 
             print(f"magnitude_NGS = {list_mag[mag]:.2f} - SR = {list_SR_Marechal[mag]:.3f} ({list_flag_mode[i]})")
 
-        plt.plot(list_mag, list_SR_Marechal, marker='.', label = f"{list_label[i]} seeing: {seeing:.2f}", linestyle=linestyle)
+        plt.plot(list_mag, list_SR_Marechal, label = f"{list_label[i]} seeing: {seeing:.2f}", linestyle=linestyle)
 
 ##### Maréchal #####
 

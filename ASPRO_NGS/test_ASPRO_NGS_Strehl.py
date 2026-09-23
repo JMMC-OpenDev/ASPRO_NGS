@@ -173,7 +173,7 @@ def plotStrehlIso(flag_mode):
 
     plt.figure(figsize=(20, 10))
 
-    dists_AO = np.arange(0.0, 30.0, 0.2, dtype=float)
+    dists_AO = np.arange(0.0, 60.0, 0.5, dtype=float)
 
     for s in range(len(seeing_values)):
         seeing = seeing_values[s]
@@ -194,8 +194,8 @@ def plotStrehlIso(flag_mode):
     plt.xlabel('dist (as)')
     plt.ylabel('Strehl_ISO (%)')
     plt.title(f"Strehl_iso(dist)")
-    plt.xlim(0.0, 30.0)
-    plt.locator_params(axis='x', nbins=30)
+    plt.xlim(0.0, 60.0)
+    plt.locator_params(axis='x', nbins=60)
     plt.locator_params(axis='y', nbins=20)
     plt.ylim(0.0, 1.0)
     plt.grid(True)
@@ -241,9 +241,11 @@ def plotStrehlMag(flag_mode):
 
 if __name__ == "__main__":
     flag_mode = "NGS_VIS"
-
-    plotStrehlIso(flag_mode)
     plotStrehlMag(flag_mode)
-    plotStrehlMag("NGS_IR")
+    plotStrehlIso(flag_mode)
+
+    flag_mode = "NGS_IR"
+    plotStrehlMag(flag_mode)
+    plotStrehlIso(flag_mode)
 
     print("That's All, folks !'")
