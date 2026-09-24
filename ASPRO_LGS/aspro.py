@@ -49,10 +49,10 @@ def get_mode_config_ao(flag_mode):
 def get_mode_config(flag_mode):
 
     ##### General parameters #####
-    D_tel = 8.0 # Telescope diameter (m)
-    transmission = 0.3 # Global transmission of the WFS channel (to compute the number of photons)
-    sig_RON = 0.2 # Readout noise of the camera
-    ExcessNoiseFactor = 2.0 # Excess noise factor
+    D_tel = 8.0  # Telescope diameter (m)
+    transmission = 0.3  # Global transmission of the WFS channel (to compute the number of photons)
+    sig_RON = 0.2  # Readout noise of the camera
+    ExcessNoiseFactor = 2.0  # Excess noise factor
     ##### General parameters #####
 
     ##### Initialization #####
@@ -77,19 +77,19 @@ def get_mode_config(flag_mode):
     if flag_mode == 'NGS_VIS':
         # config_WFS_NGS
         config_WFS_NGS['SH_diam'] = 40.0
-        config_WFS_NGS['pixScale'] = 420.0/1000.0 # arcsecond
+        config_WFS_NGS['pixScale'] = 420.0 / 1000.0  # arcsecond
         config_WFS_NGS['n_pix'] = 6.0
 
     elif flag_mode == 'LGS_VIS':
         # config_WFS_NGS
         config_WFS_NGS['SH_diam'] = 4.0
-        config_WFS_NGS['pixScale'] = 210.0/1000.0 # arcsecond
+        config_WFS_NGS['pixScale'] = 210.0 / 1000.0  # arcsecond
         config_WFS_NGS['n_pix'] = 12.0
 
     elif flag_mode[4:6] == 'IR':
         # config_WFS_NGS
         config_WFS_NGS['SH_diam'] = 9.0
-        config_WFS_NGS['pixScale'] = 510.0/1000.0 # arcsecond
+        config_WFS_NGS['pixScale'] = 510.0 / 1000.0  # arcsecond
         config_WFS_NGS['n_pix'] = 8.0
 
     # Lenslet diameter
@@ -100,10 +100,10 @@ def get_mode_config(flag_mode):
     config_WFS_LGS['ExcessNoiseFactor'] = ExcessNoiseFactor
 
     config_WFS_LGS['SH_diam'] = 9.0
-    config_WFS_LGS['pixScale'] = 800.0/1000.0 # arcsecond
+    config_WFS_LGS['pixScale'] = 800.0 / 1000.0  # arcsecond
     config_WFS_LGS['n_pix'] = 6.0
 
-    config_WFS_LGS['h_LGS'] = 90000.0 # Sodium layer height (m)
+    config_WFS_LGS['h_LGS'] = 90000.0  # Sodium layer height (m)
     config_WFS_LGS['n_ph'] = 50.0
 
     # Lenslet diameter
@@ -111,41 +111,34 @@ def get_mode_config(flag_mode):
     ##### Initialization #####
 
 
+    # Strehl
     if flag_mode == 'NGS_VIS':
-       # Strehl
         config_Strehl['geom'] = [0.267, 0.995]
-        config_Strehl['lag'] = [8.49 , 2.157]
+        config_Strehl['lag'] = [8.49, 2.157]
         config_Strehl['ph'] = [11.973]
         config_Strehl['ron'] = [0.52]
         config_Strehl['iso'] = [4.337, 1.864]
 
     elif flag_mode == 'NGS_IR':
-        # Strehl
         config_Strehl['geom'] = [0.244, 0.869]
-        config_Strehl['lag'] = [2.08 , 2.101]
+        config_Strehl['lag'] = [2.08, 2.101]
         config_Strehl['ph'] = [15.179]
         config_Strehl['ron'] = [1.653]
-        config_Strehl['iso'] = [1.75 , 1.973]
+        config_Strehl['iso'] = [1.75, 1.973]
 
     elif flag_mode == 'LGS_VIS':
-        # Strehl
-        config_Strehl['geom'] = [0.26 , 1.014]
+        config_Strehl['geom'] = [0.26, 1.014]
         config_Strehl['cone'] = [0.722, 1.899]
-        config_Strehl['lag'] = [8.46 , 0.413, 2.185]
-        config_Strehl['ph_ron_LO'] = [ 5.487e+01, -1.072e-04]
+        config_Strehl['lag'] = [8.46, 0.413, 2.185]
+        config_Strehl['ph_ron_LO'] = [5.487e+01, -1.072e-04]
         config_Strehl['ph_ron_LGS'] = [5.874, 0.159]
-        config_Strehl['iso'] = [4.326, 0.39 , 1.985]
+        config_Strehl['iso'] = [4.326, 0.39, 1.985]
 
     elif flag_mode == 'LGS_IR':
-        # Strehl
         config_Strehl['geom'] = [0.257, 0.995]
-        config_Strehl['cone'] = [0.683, 1.86 ]
+        config_Strehl['cone'] = [0.683, 1.86]
         config_Strehl['lag'] = [4.899, 0.857, 1.818]
         config_Strehl['ph_ron_LO'] = [7.575e+00, -9.438e-05]
-
-        # config_Strehl['ph_ron_LGS'] = [4.169, 0.35, 1.958]
-        # config_Strehl['iso'] = [5.666, 0.154]
-        # mistake ?
         config_Strehl['ph_ron_LGS'] = [5.666, 0.154]
         config_Strehl['iso'] = [4.169, 0.35, 1.958]
 
@@ -154,13 +147,12 @@ def get_mode_config(flag_mode):
             ' -> Unknown mode (NGS_VIS / NGS_IR / LGS_VIS / LGS_IR)')
 
 
+    # config_WFS_NGS
     if flag_mode[4:7] == 'VIS':
-        # config_WFS_NGS
         config_WFS_NGS['wavelength'] = 750e-9
         config_WFS_NGS['mag2flux'] = 2.63e10
 
     elif flag_mode[4:6] == 'IR':
-        # config_WFS_NGS
         config_WFS_NGS['wavelength'] = 2.2e-6
         config_WFS_NGS['mag2flux'] = 1.66e9
 
@@ -169,6 +161,9 @@ def get_mode_config(flag_mode):
             ' -> Unknown mode (*_VIS / *_IR)')
 
     ##### Mode-dependent variables #####
+
+    # LBO: hack to move 1 mag on the left side (cut-out)
+    config_WFS_NGS['mag2flux'] = config_WFS_NGS['mag2flux'] * (0.6)
 
     return [config_Strehl, config_WFS_NGS, config_WFS_LGS]
 
@@ -189,12 +184,11 @@ def get_mode_config(flag_mode):
 #   - wavelength: wavelength at which the Strehl must be computed (m)
 # OUTPUT: the Strehl ratio
 def Strehl_geom(coeff, airmass, DM_pitch, r_0, wavelength):
-    if len(coeff)==1:
-        return np.exp(-coeff[0]*(DM_pitch/(airmass**(-3/5)*r02rlambda(r_0, wavelength)))**(5/3))
-    elif len(coeff)==2:
-        return coeff[1]*np.exp(-coeff[0]*(DM_pitch**(5/3))/(airmass**(-3/5)*r02rlambda(r_0, wavelength))**(5/3))
-        # return np.exp(-coeff[0]*(DM_pitch**(5/3)+coeff[1])/(airmass**(-3/5)*r02rlambda(r_0, wavelength))**(5/3))
-        # return np.exp(-coeff[0]*(DM_pitch/(airmass**(-3/5)*r02rlambda(r_0, wavelength)))**(coeff[1]))
+    if len(coeff) == 1:
+        return np.exp(-coeff[0] * (DM_pitch / (airmass**(-3.0 / 5.0) * r02rlambda(r_0, wavelength)))**(5.0 / 3.0))
+    elif len(coeff) == 2:
+        return coeff[1] * np.exp(-coeff[0] * (DM_pitch**(5.0 / 3.0)) \
+                      / (airmass**(-3.0 / 5.0) * r02rlambda(r_0, wavelength))**(5.0 / 3.0))
     else:
         raise ValueError('Invalid number of coefficients!')
 
@@ -210,10 +204,10 @@ def Strehl_geom(coeff, airmass, DM_pitch, r_0, wavelength):
 #   - g_loop: gain of the loop
 # OUTPUT: the Strehl ratio
 def Strehl_lag(coeff, airmass, v_0, r_0, wavelength, f_loop, g_loop):
-    if len(coeff)==1:
-        return np.exp(-coeff[0]*(v_0/(airmass**(-3/5)*r02rlambda(r_0, wavelength)*f_loop*g_loop))**(5/3))
-    elif len(coeff)==2:
-        return np.exp(-coeff[0]*(v_0/(airmass**(-3/5)*r02rlambda(r_0, wavelength)*f_loop*g_loop))**(coeff[1]))
+    if len(coeff) == 1:
+        return np.exp(-coeff[0] * (v_0 / (airmass**(-3.0 / 5.0) * r02rlambda(r_0, wavelength) * f_loop * g_loop))**(5.0 / 3.0))
+    elif len(coeff) == 2:
+        return np.exp(-coeff[0] * (v_0 / (airmass**(-3.0 / 5.0) * r02rlambda(r_0, wavelength) * f_loop * g_loop))**(coeff[1]))
     else:
         raise ValueError('Invalid number of coefficients!')
 
@@ -231,10 +225,10 @@ def Strehl_lag(coeff, airmass, v_0, r_0, wavelength, f_loop, g_loop):
 #   - g_loop_LO: gain of the loop  for the LO part
 # OUTPUT: the Strehl ratio
 def Strehl_lag_LGS(coeff, airmass, v_0, r_0, wavelength, f_loop_LGS, g_loop_LGS, f_loop_LO, g_loop_LO):
-    if len(coeff)==2:
+    if len(coeff) == 2:
         coef_LGS = [coeff[0]]
         coef_LO = [coeff[1]]
-    elif len(coeff)==3:
+    elif len(coeff) == 3:
         coef_LGS = [coeff[0], coeff[2]]
         coef_LO = [coeff[1], coeff[2]]
     else:
@@ -255,8 +249,8 @@ def Strehl_lag_LGS(coeff, airmass, v_0, r_0, wavelength, f_loop_LGS, g_loop_LGS,
 #   - ExcessNoiseFactor: Excess noise factor (2 for EMCCDs)
 # OUTPUT: the Strehl ratio
 def Strehl_ph(coeff, N_ph, wavelength, wavelength_eq, g_loop, ExcessNoiseFactor):
-    if len(coeff)==1:
-        return np.exp(-coeff[0]*(wavelength_eq/wavelength)**2*ExcessNoiseFactor*g_loop/(2-g_loop)*1/N_ph)
+    if len(coeff) == 1:
+        return np.exp(-coeff[0] * (wavelength_eq / wavelength)**2 * ExcessNoiseFactor * g_loop / (2.0 - g_loop) / N_ph)
     else:
         raise ValueError('Invalid number of coefficients!')
 
@@ -271,8 +265,8 @@ def Strehl_ph(coeff, N_ph, wavelength, wavelength_eq, g_loop, ExcessNoiseFactor)
 #   - N_pix: number of pixel (side of the lenslet box)
 # OUTPUT: the Strehl ratio
 def Strehl_ron(coeff, sigRON, N_ph, pixScale, N_pix, g_loop):
-    if len(coeff)==1:
-        return np.exp(-coeff[0]*pixScale**2*N_pix**4*sigRON**2*g_loop/(2-g_loop)*1/N_ph**2)
+    if len(coeff) == 1:
+        return np.exp(-coeff[0] * pixScale**2 * N_pix**4 * sigRON**2 * g_loop / (2.0 - g_loop) / N_ph**2)
     else:
         raise ValueError('Invalid number of coefficients!')
 
@@ -287,10 +281,10 @@ def Strehl_ron(coeff, sigRON, N_ph, pixScale, N_pix, g_loop):
 #   - wavelength: wavelength at which the Strehl must be computed (m)
 # OUTPUT: the Strehl ratio
 def Strehl_iso(coeff, airmass, theta, h_0, r_0, wavelength):
-    if len(coeff)==1:
-        return np.exp(-coeff[0]*(theta*np.pi/180/3600*airmass*h_0/(airmass**(-3/5)*r02rlambda(r_0, wavelength)))**(5/3))
-    elif len(coeff)==2:
-        return np.exp(-coeff[0]*(theta*np.pi/180/3600*airmass*h_0/(airmass**(-3/5)*r02rlambda(r_0, wavelength)))**(coeff[1]))
+    if len(coeff) == 1:
+        return np.exp(-coeff[0] * (theta * np.pi / 180.0 / 3600.0 * airmass * h_0 / (airmass**(-3.0 / 5.0) * r02rlambda(r_0, wavelength)))**(5.0 / 3.0))
+    elif len(coeff) == 2:
+        return np.exp(-coeff[0] * (theta * np.pi / 180.0 / 3600.0 * airmass * h_0 / (airmass**(-3.0 / 5.0) * r02rlambda(r_0, wavelength)))**(coeff[1]))
     else:
         raise ValueError('Invalid number of coefficients!')
 
@@ -306,10 +300,10 @@ def Strehl_iso(coeff, airmass, theta, h_0, r_0, wavelength):
 #   - wavelength: wavelength at which the Strehl must be computed (m)
 # OUTPUT: the Strehl ratio
 def Strehl_iso_LGS(coeff, airmass, theta_LGS, theta_LO, h_0, r_0, wavelength):
-    if len(coeff)==2:
+    if len(coeff) == 2:
         coef_LGS = [coeff[0]]
         coef_LO = [coeff[1]]
-    elif len(coeff)==3:
+    elif len(coeff) == 3:
         coef_LGS = [coeff[0], coeff[2]]
         coef_LO = [coeff[1], coeff[2]]
     else:
@@ -331,14 +325,14 @@ def Strehl_iso_LGS(coeff, airmass, theta_LGS, theta_LO, h_0, r_0, wavelength):
 #   - wavelength: wavelength at which the Strehl must be computed (m)
 # OUTPUT: the Strehl ratio
 def Strehl_cone(coeff, airmass, h_0, h_lgs, D_tel, r_0, wavelength):
-    if len(coeff)==1:
-        beta = (5/3)
-    elif len(coeff)==2:
+    if len(coeff) == 1:
+        beta = (5.0 / 3.0)
+    elif len(coeff) == 2:
         beta = coeff[1]
     else:
         raise ValueError('Invalid number of coefficients!')
-    return np.exp(-coeff[0]*(D_tel/(airmass**(-3/5)*r02rlambda(r_0, wavelength))*h_0/h_lgs)**beta)
 
+    return np.exp(-coeff[0] * (D_tel / (airmass**(-3.0 / 5.0) * r02rlambda(r_0, wavelength))*h_0 / h_lgs)**beta)
 
 # Function to compute the Strehl ratio with the calibrated Maréchal approximation calibrated with TIPTOP
 # INPUTS
@@ -385,16 +379,16 @@ def compute_Marechal(flag_mode, config_target, config_turbulence, config_ao, con
     # Loading target
     wavelength_target = config_target['wavelength']
     zenith_angle = config_target['zenith']
-    airmass = 1/np.cos(np.radians(zenith_angle))
+    airmass = 1.0 / np.cos(np.radians(zenith_angle))
 
 
     # Loading atmosphere
     r_0 = config_turbulence['r_0']
     Cn2 = config_turbulence['Cn2']
     h_0 = config_turbulence['h_0']
-    h_0 = (np.sum(Cn2*np.power(h_0, 5/3))/np.sum(Cn2))**(3/5)
+    h_0 = (np.sum(Cn2 * np.power(h_0, 5.0 / 3.0)) / np.sum(Cn2))**(3.0 / 5.0)
     v_0 = config_turbulence['v_0']
-    v_0 = (np.sum(Cn2*np.power(np.abs(v_0), 5/3))/np.sum(Cn2))**(3/5)
+    v_0 = (np.sum(Cn2 * np.power(np.abs(v_0), 5.0 / 3.0)) / np.sum(Cn2))**(3.0 / 5.0)
 
     # Loading AO system
     [eqDM_pitch, eqDMn_act] = modes2eqDM(config_ao['n_mode'], config_WFS_NGS['D_tel'])
@@ -424,7 +418,7 @@ def compute_Marechal(flag_mode, config_target, config_turbulence, config_ao, con
 
 
         ##### Output #####
-        SR = SR_geom*SR_lag*SR_ph*SR_ron*SR_iso
+        SR = SR_geom * SR_lag * SR_ph * SR_ron * SR_iso
         return SR
         ##### Output #####
 
@@ -456,7 +450,7 @@ def compute_Marechal(flag_mode, config_target, config_turbulence, config_ao, con
 
 
         ##### Output #####
-        SR = SR_geom*SR_cone*SR_lag*SR_ph*SR_ron*SR_iso
+        SR = SR_cone *SR_geom * SR_lag * SR_ph * SR_ron * SR_iso
         return SR
         ##### Output #####
 
@@ -473,7 +467,7 @@ def compute_Marechal(flag_mode, config_target, config_turbulence, config_ao, con
 # MISCELLANEOUS #
 
 # Function to convert arcsecond in radians
-arcsecond2rad = lambda arcsec: arcsec/3600*np.pi/180
+arcsecond2rad = lambda arcsec: arcsec / 3600.0 / 180.0 * np.pi
 
 # Function to convert a magnitude into a number of photons per subaperture
 # INPUTS
@@ -485,7 +479,7 @@ arcsecond2rad = lambda arcsec: arcsec/3600*np.pi/180
 # OUTPUTS
 #   - n_ph: the number of photons per subaperture
 def mag2nph(magnitude, mag2flux, transmission, D_WFS, f_loop):
-    return transmission * D_WFS**2 * mag2flux*10**(-magnitude/2.5) / f_loop
+    return transmission * D_WFS**2 * mag2flux * 10**(-magnitude / 2.5) / f_loop
 
 # Function to convert the number of modes into an equivalent DM
 # INPUTS
@@ -496,10 +490,10 @@ def mag2nph(magnitude, mag2flux, transmission, D_WFS, f_loop):
 #   - eqDMn_act: the DM number of actuator of the equivalent DM
 def modes2eqDM(n_mode_AO, D_tel):
     # Equivalent number of actuators accross the pupil
-    eqDMn_act = 2*(n_mode_AO/np.pi)**0.5
+    eqDMn_act = 2.0 * (n_mode_AO / np.pi)**0.5
 
     # Equivalent actuator pitch (-1 actuator)
-    eqDM_pitch = D_tel / (eqDMn_act-1)
+    eqDM_pitch = D_tel / (eqDMn_act - 1)
 
     # Rounding the number of actuator to get an integer
     eqDMn_act = round(eqDMn_act)
@@ -511,13 +505,13 @@ def modes2eqDM(n_mode_AO, D_tel):
 # Function to convert the Fried parameter 'r_0' (m) according to
 # the 'wavelength' (m)
 # Note: The reference wavelength of the atmosphere is 500nm (m)
-r02rlambda = lambda r_0, wavelength: r_0*(wavelength/500e-9)**(6/5)
+r02rlambda = lambda r_0, wavelength: r_0 * (wavelength / 500e-9)**(6.0 / 5.0)
 
 
 # Function to convert the Fried parameter r_0 (m) to the
 # equivalent seeing (arcsecond)
 # Note: The reference wavelength of the atmosphere is 500nm (m)
-r02seeing = lambda r_0: 0.98*500e-9/r_0*180/np.pi*3600
+r02seeing = lambda r_0: 0.98 * 500e-9 / r_0 * (180.0 * 3600.0 / np.pi)
 
 # Function to convert the seeing (arcsecond) to the
 # equivalent Fried parameter r_0 (m)
